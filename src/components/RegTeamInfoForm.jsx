@@ -1,5 +1,5 @@
 import { useState } from "react";
-import apiClient from "../client";
+import multiPartClient from "../multipartclient";
 import {
   GiBasketballBall,
   GiWhistle,
@@ -178,7 +178,7 @@ const RegTeamInfoForm = ({ onClose }) => {
     formData.append("teamPrimaryNumber", teamDetails.primaryNumber);
     formData.append("logo", teamDetails.logo);
 
-    apiClient
+    multiPartClient
       .post("/team/create-team-step-1", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -225,7 +225,7 @@ const RegTeamInfoForm = ({ onClose }) => {
       console.log(pair[0] + ", " + pair[1]);
     }
 
-    apiClient
+    multiPartClient
       .post(`/team/add-coach-details`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

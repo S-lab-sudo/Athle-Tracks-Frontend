@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import apiClient from "../../client";
+import multiPartClient from "../../multipartclient";
 
 const UpdateTournament = ({ tournament, onClose }) => {
   const [formData, setFormData] = useState({
@@ -105,7 +105,7 @@ const UpdateTournament = ({ tournament, onClose }) => {
   
     const token = localStorage.getItem("atoken");
   
-    apiClient
+    multiPartClient
       .put(
         `/tournaments/${tournament._id}`,
         updatedData,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import apiClient from "../client"; // Adjust the import path as necessary
+import multiPartClient from "../../multipartclient"; // Adjust the import path as necessary
 
 const AddTeamForm = ({ onClose }) => {
   const [step, setStep] = useState(1);
@@ -92,7 +92,7 @@ const AddTeamForm = ({ onClose }) => {
     formData.append("origin", teamDetails.origin);
     formData.append("logo", teamDetails.logo); // Ensure this is a File object
 
-    apiClient
+    multiPartClient
       .post("/team/create-team-step-1", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -119,7 +119,7 @@ const AddTeamForm = ({ onClose }) => {
     formData.append("coachImage", coachDetails.image);
     formData.append("teamId", teamId);
 
-    apiClient
+    multiPartClient
       .post(`/team/add-coach-details`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -147,7 +147,7 @@ const AddTeamForm = ({ onClose }) => {
       formData.append(`playerDocuments[${index}]`, player.document);
     });
   
-    apiClient
+    multiPartClient
       .post(`/team/add-player-details`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

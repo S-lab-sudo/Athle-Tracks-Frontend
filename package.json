@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "del public\\vite.svg",
     "dev": "vite",
-    "build": "vite build --outDir ../my-node-express-app/dist",
+    "build": "vite build --outDir ../my-node-express-app/src/dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },

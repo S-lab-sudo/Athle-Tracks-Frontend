@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import apiClient from "../../client"; // Adjust the import path as necessary
+import multiPartClient from "../../multipartclient"; // Adjust the import path as necessary
 
 const AddTournament = ({ onClose, onAddTournament }) => {
   const [name, setName] = useState("");
@@ -114,7 +114,7 @@ const AddTournament = ({ onClose, onAddTournament }) => {
       console.log(`${key}: ${value}`);
     }
 
-    apiClient
+    multiPartClient
       .post(
         "/tournaments/create-tournament",
         formData,
