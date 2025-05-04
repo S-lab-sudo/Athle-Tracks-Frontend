@@ -25,7 +25,7 @@ const Matches = () => {
   };
 
   return (
-    <div className="container mx-auto mt-5 p-4">
+    <div className="mx-auto mt-5 p-4 h-full overflow-x-scroll w-full overflow-y-scroll">
       <h2 className="text-xl font-bold mb-4">Matches</h2>
       <table className="min-w-full bg-white border border-gray-300">
         <thead>

@@ -22,7 +22,7 @@ const AdminDashboard = () => {
         })
         .then((res) => {
           if (res.status !== 200) {
-            return (window.location.href = "/");
+            return (window.location.href = "/adminlogin");
           }
         })
         .catch((err) => {
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
             if (err.response.status === 500) {
               alert("Internal Server Error");
             } else if (err.response.status === 401) {
-              return (window.location.href = "/");
+              return (window.location.href = "/adminlogin");
             } else {
               console.log(err);
             }
@@ -42,8 +42,8 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="container p-4">
-      <div className="flex justify-center space-x-4 mb-6">
+    <div className="p-4 w-[100vw]">
+      <div className="w-[100vw] flex justify-center space-x-4 mb-6 overflow-x-scroll">
         <button
           onClick={() => setSelectedContent("Tournaments")}
           className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 ${selectedContent === "Tournaments" ? "bg-blue-700" : ""}`}

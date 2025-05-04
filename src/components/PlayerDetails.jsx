@@ -15,13 +15,13 @@ const PlayerDetails = () => {
     apiClient
       .get(`/player/getPlayerById/${id}`)
       .then((response) => {
-        let matchHistoryLength = 0
-        response.data.match_history.map((match) => {
-          match.match_id.player_stats.length>0&&matchHistoryLength++
-        })
-        response.data.averagePoints = response.data.total_points / matchHistoryLength
-        response.data.averageAssists = response.data.total_assists / matchHistoryLength
-        response.data.averageRebounds = response.data.total_rebounds / matchHistoryLength
+        let matchHistoryLength = response.data.match_history.filter(
+          (match) => match.notplayed === "played"
+        ).length;
+        
+        response.data.averagePoints = response.data.total_points / matchHistoryLength;
+        response.data.averageAssists = response.data.total_assists / matchHistoryLength;
+        response.data.averageRebounds = response.data.total_rebounds / matchHistoryLength;
         console.log(response.data)
         setPlayerData(response.data)
         setLoading(false)

@@ -6,9 +6,6 @@ const UpdateMatch = ({ match, onClose }) => {
   const [updatedTeam2Players, setUpdatedTeam2Players] = useState([]);
 
   useEffect(() => {
-    // console.log('Received match details:', match);
-
-    // Initialize the updated state with the player's stats from playerStats
     setUpdatedTeam1Players(
       match.team1Players.map((player) => {
         const playerStats = match.playerStats.find(
@@ -17,12 +14,17 @@ const UpdateMatch = ({ match, onClose }) => {
         return {
           playerId: player._id,
           name: player.name,
-          points: playerStats ? playerStats.points : 0, // Set initial points
-          assists: playerStats ? playerStats.assists : 0, // Set initial assists
-          rebounds: playerStats ? playerStats.rebounds : 0, // Set initial rebounds
-          inputPoints: 0, // Track input changes
+          points: playerStats ? playerStats.points : 0,
+          assists: playerStats ? playerStats.assists : 0,
+          rebounds: playerStats ? playerStats.rebounds : 0,
+          inputPoints: 0,
           inputAssists: 0,
           inputRebounds: 0,
+          notplayed: playerStats?.notplayed
+            ? playerStats.notplayed === "DNP"
+              ? "played"
+              : playerStats.notplayed
+            : "played",
         };
       })
     );
@@ -35,12 +37,17 @@ const UpdateMatch = ({ match, onClose }) => {
         return {
           playerId: player._id,
           name: player.name,
-          points: playerStats ? playerStats.points : 0, // Set initial points
-          assists: playerStats ? playerStats.assists : 0, // Set initial assists
-          rebounds: playerStats ? playerStats.rebounds : 0, // Set initial rebounds
-          inputPoints: 0, // Track input changes
+          points: playerStats ? playerStats.points : 0,
+          assists: playerStats ? playerStats.assists : 0,
+          rebounds: playerStats ? playerStats.rebounds : 0,
+          inputPoints: 0,
           inputAssists: 0,
           inputRebounds: 0,
+          notplayed: playerStats?.notplayed
+            ? playerStats.notplayed === "DNP"
+              ? "played"
+              : playerStats.notplayed
+            : "played",
         };
       })
     );
@@ -68,6 +75,7 @@ const UpdateMatch = ({ match, onClose }) => {
         points: parseInt(player.inputPoints, 10) || 0,
         assists: parseInt(player.inputAssists, 10) || 0,
         rebounds: parseInt(player.inputRebounds, 10) || 0,
+        notplayed: player.notplayed,
       }));
 
     const updatedMatchDetails = {
@@ -78,7 +86,6 @@ const UpdateMatch = ({ match, onClose }) => {
 
     console.log('Updated Match Details:', updatedMatchDetails);
 
-    // Call API to update match details
     apiClient
       .post('/match/match/update', updatedMatchDetails)
       .then((response) => {
@@ -98,17 +105,18 @@ const UpdateMatch = ({ match, onClose }) => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Update Match</h2>
-      <div className="mb-4">
+      <h2 className="text-xl font-bold mb-4 text-center">Update Match</h2>
+      <div className="mb-4 text-center">
         <h3 className="text-lg font-semibold">Tournament: {match.tournamentName}</h3>
       </div>
-      <div className="flex justify-between mb-4">
-        <div>
-          <h4 className="text-md font-semibold">Team 1: {match.team1Name}</h4>
-          <table className="min-w-full bg-white border border-gray-300 mt-2">
+      <div className="flex flex-col lg:flex-row justify-between gap-8 mb-4">
+        <div className="w-full lg:w-1/2">
+          <h4 className="text-md font-semibold text-center lg:text-left">Team 1: {match.team1Name}</h4>
+          <table className="min-w-full bg-white border border-gray-300 mt-2 text-sm">
             <thead>
               <tr className="bg-gray-100">
                 <th className="py-2 px-4 text-left border-b border-gray-300">Player's Name</th>
+                <th className="py-2 px-4 text-left border-b border-gray-300">Played or not</th>
                 <th className="py-2 px-4 text-left border-b border-gray-300">Points</th>
                 <th className="py-2 px-4 text-left border-b border-gray-300">Assists</th>
                 <th className="py-2 px-4 text-left border-b border-gray-300">Rebounds</th>
@@ -118,6 +126,20 @@ const UpdateMatch = ({ match, onClose }) => {
               {updatedTeam1Players.map((player) => (
                 <tr key={player.playerId} className="hover:bg-gray-50">
                   <td className="border px-4 py-2 text-left">{player.name}</td>
+                  <td className="border px-4 py-2 text-left">
+                    <input
+                      type="checkbox"
+                      checked={player.notplayed === "played"}
+                      onChange={(e) => {
+                        const updatedPlayers = updatedTeam1Players.map((p) =>
+                          p.playerId === player.playerId ? { ...p, notplayed: e.target.checked ? "played" : "Not Played" } : p
+                        );
+                        setUpdatedTeam1Players(updatedPlayers);
+                      }}
+                      className="mr-2"
+                    />
+                    {player.notplayed === "played" ? "Played" : "Not Played"}
+                  </td>
                   <td className="border px-4 py-2 text-left">
                     <span
                       className={`${getColor(player.points + (parseInt(player.inputPoints, 10) || 0))} mr-2 font-bold text-lg`}
@@ -168,12 +190,13 @@ const UpdateMatch = ({ match, onClose }) => {
             </tbody>
           </table>
         </div>
-        <div>
-          <h4 className="text-md font-semibold">Team 2: {match.team2Name}</h4>
-          <table className="min-w-full bg-white border border-gray-300 mt-2">
+        <div className="w-full lg:w-1/2">
+          <h4 className="text-md font-semibold text-center lg:text-left">Team 2: {match.team2Name}</h4>
+          <table className="min-w-full bg-white border border-gray-300 mt-2 text-sm">
             <thead>
               <tr className="bg-gray-100">
                 <th className="py-2 px-4 text-left border-b border-gray-300">Player's Name</th>
+                <th className="py-2 px-4 text-left border-b border-gray-300">Played or not</th>
                 <th className="py-2 px-4 text-left border-b border-gray-300">Points</th>
                 <th className="py-2 px-4 text-left border-b border-gray-300">Assists</th>
                 <th className="py-2 px-4 text-left border-b border-gray-300">Rebounds</th>
@@ -183,6 +206,20 @@ const UpdateMatch = ({ match, onClose }) => {
               {updatedTeam2Players.map((player) => (
                 <tr key={player.playerId} className="hover:bg-gray-50">
                   <td className="border px-4 py-2 text-left">{player.name}</td>
+                  <td className="border px-4 py-2 text-left">
+                    <input
+                      type="checkbox"
+                      checked={player.notplayed === "played"}
+                      onChange={(e) => {
+                        const updatedPlayers = updatedTeam2Players.map((p) =>
+                          p.playerId === player.playerId ? { ...p, notplayed: e.target.checked ? "played" : "Not Played" } : p
+                        );
+                        setUpdatedTeam2Players(updatedPlayers);
+                      }}
+                      className="mr-2"
+                    />
+                    {player.notplayed === "played" ? "Played" : "Not Played"}
+                  </td>
                   <td className="border px-4 py-2 text-left">
                     <span
                       className={`${getColor(player.points + (parseInt(player.inputPoints, 10) || 0))} mr-2 font-bold text-lg`}
@@ -234,17 +271,17 @@ const UpdateMatch = ({ match, onClose }) => {
           </table>
         </div>
       </div>
-      <div className="flex justify-between mt-4">
+      <div className="flex flex-col sm:flex-row justify-between mt-4 gap-4">
         <button
           type="button"
           onClick={onClose}
-          className="bg-red-500 text-white px-4 py-2 rounded"
+          className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto"
         >
           Close
         </button>
         <button
           type="button"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
           onClick={handleUpdateMatch}
         >
           Update Match

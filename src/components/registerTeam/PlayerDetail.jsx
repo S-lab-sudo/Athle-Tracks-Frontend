@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-// import apiClient from "../../client"
-import axios from "axios";
+import apiClient from "../../client"
 import multiPartClient from "../../multipartclient"
 import { useState, useRef } from "react"
 import { FaSave } from "react-icons/fa"
@@ -185,8 +184,8 @@ const PlayerDetail = ({ isStepSaved, setStep, teamId }) => {
   };
 
   const addTeamToTournament = () => {
-    multiPartClient
-      .post("http://loclahost:8000/api/tournaments/assign-team-to-tournament", {
+    apiClient
+      .post("/tournaments/assign-team-to-tournament", {
         tournamentId: window.location.href.split("/").pop(),
         teamId: teamId,
       })

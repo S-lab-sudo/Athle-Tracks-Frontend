@@ -43,7 +43,7 @@ const Tournaments = () => {
   };
 
   return (
-    <div className="container mx-auto mt-5 p-4 h-[100vh] w-[100vw]">
+    <div className="container mx-auto mt-5 p-4 h-full overflow-x-scroll w-full overflow-y-scroll">
       <h2 className="text-xl font-bold mb-4">Tournaments</h2>
       <button
         onClick={() => {setIsModalOpen(true); setModalType("create")}}

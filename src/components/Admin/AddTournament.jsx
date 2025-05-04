@@ -10,6 +10,8 @@ const AddTournament = ({ onClose, onAddTournament }) => {
   const [organizerImage, setOrganizerImage] = useState(null);
   const [organizerPhoneNumber, setOrganizerPhoneNumber] = useState("");
   const [firstPrize, setFirstPrize] = useState("");
+  const [registerable, setRegisterable] = useState('')
+  const [league, setLeague] = useState('')
   const [secondPrize, setSecondPrize] = useState("");
   const [thirdPrize, setThirdPrize] = useState("");
   const [entryFee, setEntryFee] = useState("");
@@ -49,6 +51,12 @@ const AddTournament = ({ onClose, onAddTournament }) => {
       switch (name) {
         case "name":
           setName(value);
+          break;
+        case "registerable":
+          setRegisterable(value);
+          break;
+        case "league":
+          setLeague(value);
           break;
         case "startDate":
           setStartDate(value);
@@ -106,6 +114,8 @@ const AddTournament = ({ onClose, onAddTournament }) => {
     formData.append("prizePool[thirdPrize]", thirdPrize);
     formData.append("prizePool[entryFee]", entryFee);
     formData.append("prizePool[mvp]", mvp);
+    formData.append("registerable", registerable);
+    formData.append("league", league);
 
     const token = localStorage.getItem("atoken");
 
@@ -163,7 +173,7 @@ const AddTournament = ({ onClose, onAddTournament }) => {
 
   return (
     <form
-      className="w-[40vw] h-[80vh] overflow-y-scroll"
+      className="w-full h-full overflow-y-scroll"
       onSubmit={handleFormSubmit}
     >
       <h2 className="text-xl font-bold mb-4">Create Tournament</h2>
@@ -173,6 +183,28 @@ const AddTournament = ({ onClose, onAddTournament }) => {
           type="text"
           name="name"
           value={name}
+          onChange={handleFormChange}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Registerable</label>
+        <input
+          type="text"
+          name="registerable"
+          value={registerable}
+          onChange={handleFormChange}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">League</label>
+        <input
+          type="text"
+          name="league"
+          value={league}
           onChange={handleFormChange}
           className="mt-1 block w-full p-2 border border-gray-300 rounded"
           required

@@ -38,12 +38,14 @@ const DummyMatchDetails = () => {
 
               return {
                 player_id: playerStat.player_id,
+                player_image: player.image,
                 jerseyNumber: player.jerseyNumber,
                 player_name: player.name,
                 team_id: playerStat.team_id === match.team_1._id ? match.team_1.team_details.name : match.team_2.team_details.name,
                 points: playerStat.points,
                 assists: playerStat.assists,
                 rebounds: playerStat.rebounds,
+                notplayed: playerStat.notplayed,
               };
             } catch (error) {
               console.error(`Error fetching player details for ID ${playerStat.player_id}:`, error);
@@ -65,8 +67,6 @@ const DummyMatchDetails = () => {
           team2Score,
           playerStats: filteredPlayerStats,
         };
-
-        console.log(transformedData)
 
         setTransformedData(transformedMatchData);
       } catch (error) {

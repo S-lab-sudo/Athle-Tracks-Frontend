@@ -18,6 +18,20 @@ const MatchDetails = ({
   const team1Won = points1 > points2;
   const team2Won = points2 > points1;
 
+  // Find the mvp of the match where there is a single person from both teams and mvp is determined by the adddition of points, assists, and rebounds divide by 3
+  const findMVP = (players) => {
+    return players.reduce((max, player) => {
+      const playerScore =
+        (player.points + player.assists + player.rebounds) / 3;
+      const maxScore = (max.points + max.assists + max.rebounds) / 3;
+      return playerScore > maxScore ? player : max;
+    }, players[0]);
+  };
+  const mvp1 = findMVP(players1);
+  const mvp2 = findMVP(players2);
+  const mvp = mvp1.points > mvp2.points ? mvp1 : mvp2;
+  // console.log(mvp);
+
   // Find top performers
   const getTopScorer = (players) => {
     return players.reduce(
@@ -86,7 +100,9 @@ const MatchDetails = ({
                   />
                 </span>
               </div>
-              <span className="md:text-xl text-base font-bold mb-1">{team1}</span>
+              <span className="md:text-xl text-base font-bold mb-1">
+                {team1}
+              </span>
               <div
                 className={`md:text-4xl text-xl font-bold ${
                   team1Won ? "text-green-400" : "text-white"
@@ -125,7 +141,9 @@ const MatchDetails = ({
                   />
                 </span>
               </div>
-              <span className="md:text-xl text-base font-bold mb-1">{team2}</span>
+              <span className="md:text-xl text-base font-bold mb-1">
+                {team2}
+              </span>
               <div
                 className={`md:text-4xl text-xl font-bold ${
                   team2Won ? "text-green-400" : "text-white"
@@ -138,6 +156,41 @@ const MatchDetails = ({
                   WINNER
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gray-800 rounded-lg shadow-xl p-6 mb-8 border border-orange-500/30">
+          <div className="flex items-center justify-center mb-6">
+            <IoTrophyOutline className="text-orange-500 mr-2" />
+            <h2 className="text-xl font-bold text-center">MVP of the match:</h2>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="h-24 w-24 border-4 border-yellow-500 rounded-full flex items-center justify-center bg-gray-700 mb-3 shadow-lg">
+              <span>
+                <img
+                  src={`${mvp.player_image}`}
+                  alt={`${mvp.player_name} logo`}
+                  className="h-20 w-20 rounded-full"
+                />
+              </span>
+            </div>
+            <Link to={`/player/${mvp.player_id}`} >
+              <span className="md:text-xl text-base font-bold mb-1">
+                {mvp.player_name}
+              </span>
+            </Link>
+            <div className="flex items-center gap-2">
+              <div className="text-md text-white-800 font-bold items-center flex">
+                <span className="text-2xl font-bold text-yellow-400">{mvp.points}</span>
+                &nbsp; POINTS | &nbsp; 
+                  <span className="text-2xl font-bold text-blue-400"> {mvp.assists} </span>
+                 &nbsp;ASISTS | &nbsp;
+                <span className="text-2xl font-bold text-green-400">
+                  {mvp.rebounds}
+                </span>
+                REBOUNDS
+              </div>
             </div>
           </div>
         </div>
@@ -209,9 +262,9 @@ const MatchDetails = ({
                   </div>
                   <div>
                     <Link to={`/player/${team1TopAssister.player_id}`}>
-                    <p className="font-semibold">
-                      {team1TopAssister.player_name}
-                    </p>
+                      <p className="font-semibold">
+                        {team1TopAssister.player_name}
+                      </p>
                     </Link>
                     <p className="text-xs text-gray-400">{team1}</p>
                   </div>
@@ -230,9 +283,9 @@ const MatchDetails = ({
                   </div>
                   <div>
                     <Link to={`/player/${team2TopAssister.player_id}`}>
-                    <p className="font-semibold">
-                      {team2TopAssister.player_name}
-                    </p>
+                      <p className="font-semibold">
+                        {team2TopAssister.player_name}
+                      </p>
                     </Link>
                     <p className="text-xs text-gray-400">{team2}</p>
                   </div>
@@ -255,9 +308,9 @@ const MatchDetails = ({
                   </div>
                   <div>
                     <Link to={`/player/${team1TopRebounder.player_id}`}>
-                    <p className="font-semibold">
-                      {team1TopRebounder.player_name}
-                    </p>
+                      <p className="font-semibold">
+                        {team1TopRebounder.player_name}
+                      </p>
                     </Link>
                     <p className="text-xs text-gray-400">{team1}</p>
                   </div>
@@ -276,9 +329,9 @@ const MatchDetails = ({
                   </div>
                   <div>
                     <Link to={`/player/${team2TopRebounder.player_id}`}>
-                    <p className="font-semibold">
-                      {team2TopRebounder.player_name}
-                    </p>
+                      <p className="font-semibold">
+                        {team2TopRebounder.player_name}
+                      </p>
                     </Link>
                     <p className="text-xs text-gray-400">{team2}</p>
                   </div>
@@ -407,7 +460,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.points}
+                              {player.notplayed==="played"?player.points:"DNA"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -418,7 +471,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.assists}
+                              {player.notplayed==="played"?player.assists:"DNA"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -429,7 +482,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.rebounds}
+                              {player.notplayed==="played"?player.rebounds:"DNA"}
                             </span>
                           </td>
                         </tr>
@@ -511,7 +564,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.points}
+                              {player.notplayed==="played"?player.points:"DNA"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -522,7 +575,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.assists}
+                              {player.notplayed==="played"?player.assists:"DNA"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -533,7 +586,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.rebounds}
+                              {player.notplayed==="played"?player.rebounds:"DNA"}
                             </span>
                           </td>
                         </tr>
