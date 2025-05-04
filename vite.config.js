@@ -1,13 +1,27 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import path from "path";
 
-// https://vite.dev/config/
+
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  build: {
-    // Output to the external directory
-    outDir: path.resolve(__dirname, "../my-node-express-app/src/dist"),
+  plugins: [react(),tailwindcss()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      protocol: 'wss',
+      host: 'athletracks.com',
+      clientPort: 443
+    },
+    fs: {
+      allow: ['/home/ubuntu/Athle-Tracks-Frontend'],
+      strict: false
+    }
   },
+  build: {
+    manifest: true,
+    rollupOptions: {
+      external: [/^\/\.git/, /^\/\.DS_Store/]
+    }
+  }
 });
