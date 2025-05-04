@@ -18,4 +18,4 @@ jobs:
             cd ~/Athle-Tracks-Frontend
             git pull origin main
             npm install
-            pm2 restart backend
+            pm2 restart frontend
