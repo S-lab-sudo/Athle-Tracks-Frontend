@@ -84,7 +84,6 @@ const Events = () => {
           (tournament) => tournament._id === selectedTournament
         );
         setselectedTournamentData(selectedTournamentData)
-        console.log(selectedTournamentData)
 
         if (
           selectedTournamentData &&
