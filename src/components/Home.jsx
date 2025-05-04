@@ -27,7 +27,6 @@ const Home = () => {
     apiClient
       .get("/tournaments/")
       .then((response) => {
-        console.log(response.data)
         setTournamentData(response.data.allTournaments[0]);
         setIsLoading(false);
       })

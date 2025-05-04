@@ -75,8 +75,6 @@ const Standings = () => {
 
         // Sort teams by points (highest first)
         const sortedStandings = standings.sort((a, b) => b.points - a.points)
-
-        console.log(sortedStandings)
         setTeamsData(sortedStandings)
         setLoading(false)
       })
