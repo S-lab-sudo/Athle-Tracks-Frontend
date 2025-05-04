@@ -8,6 +8,6 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     // Output to the external directory
-    outDir: path.resolve(__dirname, "../my-node-express-app/dist"),
+    outDir: path.resolve(__dirname, "../my-node-express-app/src/dist"),
   },
 });

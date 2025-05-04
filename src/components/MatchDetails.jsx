@@ -182,12 +182,12 @@ const MatchDetails = ({
             </Link>
             <div className="flex items-center gap-2">
               <div className="text-md text-white-800 font-bold items-center flex">
-                <span className="text-2xl font-bold text-yellow-400">{mvp.points}</span>
+                <span className="md:text-2xl text-xl font-bold text-yellow-400">{mvp.points}</span>
                 &nbsp; POINTS | &nbsp; 
-                  <span className="text-2xl font-bold text-blue-400"> {mvp.assists} </span>
+                  <span className="nd:text-2xl text-xl font-bold text-blue-400"> {mvp.assists} </span>
                  &nbsp;ASISTS | &nbsp;
-                <span className="text-2xl font-bold text-green-400">
-                  {mvp.rebounds}
+                <span className="md:text-2xl text-xl font-bold text-green-400">
+                  {mvp.rebounds}&nbsp;
                 </span>
                 REBOUNDS
               </div>
@@ -460,7 +460,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.points:"DNA"}
+                              {player.notplayed==="played"?player.points:"DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -471,7 +471,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.assists:"DNA"}
+                              {player.notplayed==="played"?player.assists:"DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -482,7 +482,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.rebounds:"DNA"}
+                              {player.notplayed==="played"?player.rebounds:"DNP"}
                             </span>
                           </td>
                         </tr>
@@ -564,7 +564,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.points:"DNA"}
+                              {player.notplayed==="played"?player.points:"DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -575,7 +575,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.assists:"DNA"}
+                              {player.notplayed==="played"?player.assists:"DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -586,7 +586,7 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.rebounds:"DNA"}
+                              {player.notplayed==="played"?player.rebounds:"DNP"}
                             </span>
                           </td>
                         </tr>
