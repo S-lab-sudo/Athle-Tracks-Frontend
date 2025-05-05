@@ -27,9 +27,8 @@ const MatchDetails = ({
       return playerScore > maxScore ? player : max;
     }, players[0]);
   };
-  const mvp1 = findMVP(players1);
-  const mvp2 = findMVP(players2);
-  const mvp = mvp1.points > mvp2.points ? mvp1 : mvp2;
+
+  const mvp = team1Won ? findMVP(players1) : findMVP(players2);
   // console.log(mvp);
 
   // Find top performers
