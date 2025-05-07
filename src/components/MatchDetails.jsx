@@ -31,9 +31,6 @@ const MatchDetails = ({
     return pointsB - pointsA;
   });
 
-  console.log(sortedPlayers1);
-  console.log(sortedPlayers2);
-
   let mvp;
 
   if (mvpFromDatabase && mvpFromDatabase !== "N/A") {
