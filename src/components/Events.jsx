@@ -97,6 +97,7 @@ const Events = () => {
 
           const responses = await Promise.all(matchPromises);
           const matchData = responses.map((res) => res.data);
+          console.log(matchData)
           // Remove manual score calculation and use backend-provided scores
           const enrichedMatchData = matchData.map((match) => ({
             ...match,
