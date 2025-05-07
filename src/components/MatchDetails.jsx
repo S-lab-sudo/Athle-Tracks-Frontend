@@ -11,6 +11,7 @@ const MatchDetails = ({
   points2,
   players1,
   players2,
+  mvpFromDatabase,
   team1Logo,
   team2Logo,
 }) => {
@@ -18,18 +19,39 @@ const MatchDetails = ({
   const team1Won = points1 > points2;
   const team2Won = points2 > points1;
 
-  // Find the mvp of the match where there is a single person from both teams and mvp is determined by the adddition of points, assists, and rebounds divide by 3
-  const findMVP = (players) => {
-    return players.reduce((max, player) => {
-      const playerScore =
-        (player.points + player.assists + player.rebounds) / 3;
-      const maxScore = (max.points + max.assists + max.rebounds) / 3;
-      return playerScore > maxScore ? player : max;
-    }, players[0]);
-  };
+  const sortedPlayers1 = [...players1].sort((a, b) => {
+    const pointsA = a.notplayed === "played" ? a.points : -1;
+    const pointsB = b.notplayed === "played" ? b.points : -1;
+    return pointsB - pointsA;
+  });
+  
+  const sortedPlayers2 = [...players2].sort((a, b) => {
+    const pointsA = a.notplayed === "played" ? a.points : -1;
+    const pointsB = b.notplayed === "played" ? b.points : -1;
+    return pointsB - pointsA;
+  });
 
-  const mvp = team1Won ? findMVP(players1) : findMVP(players2);
-  // console.log(mvp);
+  console.log(sortedPlayers1);
+  console.log(sortedPlayers2);
+
+  let mvp;
+
+  if (mvpFromDatabase && mvpFromDatabase !== "N/A") {
+    mvp =
+      players1.find((player) => player.player_id === mvpFromDatabase) ||
+      players2.find((player) => player.player_id === mvpFromDatabase);
+  } else {
+    const findMVP = (players) => {
+      return players.reduce((max, player) => {
+        const playerScore =
+          (player.points + player.assists + player.rebounds) / 3;
+        const maxScore = (max.points + max.assists + max.rebounds) / 3;
+        return playerScore > maxScore ? player : max;
+      }, players[0]);
+    };
+
+    mvp = team1Won ? findMVP(players1) : findMVP(players2);
+  }
 
   // Find top performers
   const getTopScorer = (players) => {
@@ -174,17 +196,22 @@ const MatchDetails = ({
                 />
               </span>
             </div>
-            <Link to={`/player/${mvp.player_id}`} >
+            <Link to={`/player/${mvp.player_id}`}>
               <span className="md:text-xl text-base font-bold mb-1">
                 {mvp.player_name}
               </span>
             </Link>
             <div className="flex items-center gap-2">
               <div className="text-md text-white-800 font-bold items-center flex">
-                <span className="md:text-2xl text-xl font-bold text-yellow-400">{mvp.points}</span>
-                &nbsp; POINTS | &nbsp; 
-                  <span className="nd:text-2xl text-xl font-bold text-blue-400"> {mvp.assists} </span>
-                 &nbsp;ASISTS | &nbsp;
+                <span className="md:text-2xl text-xl font-bold text-yellow-400">
+                  {mvp.points}
+                </span>
+                &nbsp; POINTS | &nbsp;
+                <span className="nd:text-2xl text-xl font-bold text-blue-400">
+                  {" "}
+                  {mvp.assists}{" "}
+                </span>
+                &nbsp;ASISTS | &nbsp;
                 <span className="md:text-2xl text-xl font-bold text-green-400">
                   {mvp.rebounds}&nbsp;
                 </span>
@@ -413,7 +440,7 @@ const MatchDetails = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {players1.map((player, index) => (
+                      {sortedPlayers1.map((player, index) => (
                         <tr
                           key={index}
                           className={`
@@ -459,7 +486,9 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.points:"DNP"}
+                              {player.notplayed === "played"
+                                ? player.points
+                                : "DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -470,7 +499,9 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.assists:"DNP"}
+                              {player.notplayed === "played"
+                                ? player.assists
+                                : "DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -481,7 +512,9 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.rebounds:"DNP"}
+                              {player.notplayed === "played"
+                                ? player.rebounds
+                                : "DNP"}
                             </span>
                           </td>
                         </tr>
@@ -517,14 +550,14 @@ const MatchDetails = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {players2.map((player, index) => (
+                      {sortedPlayers2.map((player, index) => (
                         <tr
                           key={index}
                           className={`
                             ${
                               index % 2 === 0 ? "bg-gray-800" : "bg-gray-700/50"
                             } 
-                            hover:bg-gray-600 transition-colors
+                            hover:bg-gray-600 transition-colors 
                           `}
                         >
                           <td className="p-3 border-b border-gray-700">
@@ -563,7 +596,9 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.points:"DNP"}
+                              {player.notplayed === "played"
+                                ? player.points
+                                : "DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -574,7 +609,9 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.assists:"DNP"}
+                              {player.notplayed === "played"
+                                ? player.assists
+                                : "DNP"}
                             </span>
                           </td>
                           <td className="p-3 text-center border-b border-gray-700">
@@ -585,7 +622,9 @@ const MatchDetails = ({
                                   : ""
                               }
                             >
-                              {player.notplayed==="played"?player.rebounds:"DNP"}
+                              {player.notplayed === "played"
+                                ? player.rebounds
+                                : "DNP"}
                             </span>
                           </td>
                         </tr>

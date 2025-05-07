@@ -63,6 +63,7 @@ const DummyMatchDetails = () => {
           team2: match.team_2.team_details.name,
           team1Logo: match.team_1.team_details.logo,
           team2Logo: match.team_2.team_details.logo,
+          mvp: match.mvp? match.mvp : "N/A",
           team1Score,
           team2Score,
           playerStats: filteredPlayerStats,
@@ -89,6 +90,7 @@ const DummyMatchDetails = () => {
             team2={transformedData.team2}
             team2Logo={transformedData.team2Logo} // Add logo if needed
             points2={transformedData.team2Score}
+            mvpFromDatabase={transformedData.mvp}
             players1={transformedData.playerStats.filter(
               (player) => player.team_id === transformedData.team1
             )}
