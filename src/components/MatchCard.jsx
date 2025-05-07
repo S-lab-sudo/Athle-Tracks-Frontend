@@ -50,12 +50,12 @@ const MatchCard = ({
               </span>
             </div>
             <span
-              className={`md:text-xl font-bold text-base ${
+              className={`md:text-md font-bold text-base ${
                 team1Won ? "text-green-400" : "text-white"
               }`}
             >
               {team1Won && (
-                <span className="text-xs bg-green-900 px-2 py-1 rounded mr-1">
+                <span className="md:text-md text-base bg-green-900 px-1 py-1 rounded mr-1">
                   WIN
                 </span>
               )}
@@ -112,13 +112,13 @@ const MatchCard = ({
               </span>
             </div>
             <span
-              className={`md:text-xl font-bold text-base ${
+              className={`md:text-md font-bold text-base ${
                 team2Won ? "text-green-400" : "text-white"
               }`}
             >
               {team2}
               {team2Won && (
-                <span className="text-xs bg-green-900 px-2 py-1 rounded ml-1">
+                <span className="md:text-md text-base bg-green-900 px-1 py-1 rounded ml-1">
                   WIN
                 </span>
               )}

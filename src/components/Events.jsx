@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const Events = () => {
   const [selectedTournament, setSelectedTournament] = useState("");
-  const [selectedTournamentData, setselectedTournamentData] = useState("")
+  const [selectedTournamentData, setselectedTournamentData] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [allTournaments, setAllTournaments] = useState([]);
@@ -83,7 +83,7 @@ const Events = () => {
         const selectedTournamentData = allTournaments.find(
           (tournament) => tournament._id === selectedTournament
         );
-        setselectedTournamentData(selectedTournamentData)
+        setselectedTournamentData(selectedTournamentData);
 
         if (
           selectedTournamentData &&
@@ -97,24 +97,13 @@ const Events = () => {
 
           const responses = await Promise.all(matchPromises);
           const matchData = responses.map((res) => res.data);
-          const enrichedMatchData = matchData.map((match) => {
-            let team1Score = 0;
-            let team2Score = 0;
-
-            match.player_stats.forEach((playerStat) => {
-              if (playerStat.team_id === match.team_1._id) {
-                team1Score += playerStat.points;
-              } else if (playerStat.team_id === match.team_2._id) {
-                team2Score += playerStat.points;
-              }
-            });
-
-            return {
-              ...match,
-              team1Score,
-              team2Score,
-            };
-          });
+          // Remove manual score calculation and use backend-provided scores
+          const enrichedMatchData = matchData.map((match) => ({
+            ...match,
+            // Directly use backend-calculated scores
+            team1Score: match.team1Score,
+            team2Score: match.team2Score,
+          }));
 
           const grouped = enrichedMatchData.reduce((acc, match) => {
             const matchDate = dayjs(match.date).format("DD MMM YYYY");
@@ -296,11 +285,17 @@ const Events = () => {
                 </div>
               </div>
             </div>
-            {selectedTournamentData.league==="true"&&
+            {selectedTournamentData.league === "true" && (
               <div className="mt-4 text-sm text-gray-400">
-              <Link to={`/standings/${selectedTournamentData._id}`}  className="text-base font-medium px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors duration-300" > View Standings   </Link>
-            </div>
-            }
+                <Link
+                  to={`/standings/${selectedTournamentData._id}`}
+                  className="text-base font-medium px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors duration-300"
+                >
+                  {" "}
+                  View Standings{" "}
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
