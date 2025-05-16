@@ -69,7 +69,7 @@ const Standings = () => {
             numberOfPlays,
             numberOfWins,
             numberOfLosses,
-            points: numberOfWins * 3,
+            points: numberOfWins * 2,
           }
         })
 
