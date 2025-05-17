@@ -69,7 +69,7 @@ const Standings = () => {
             numberOfPlays,
             numberOfWins,
             numberOfLosses,
-            points: numberOfWins * 2,
+            points:( numberOfWins * 2) + numberOfLosses, // 2 points for a win, 1 point for a loss
           }
         })
 
@@ -173,7 +173,7 @@ const Standings = () => {
           {/* Legend */}
           <div className="mt-6 bg-gray-800/50 rounded-lg p-4 border border-gray-700">
             <h3 className="text-sm font-medium text-gray-300 mb-2">Points System:</h3>
-            <p className="text-xs text-gray-400">Win = 2 points | Loss = 0 points</p>
+            <p className="text-xs text-gray-400">Win = 2 points | Loss = 1 points</p>
           </div>
         </div>
       </div>
