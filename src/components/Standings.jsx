@@ -29,14 +29,14 @@ const Standings = () => {
           let numberOfPlays = 0
           let numberOfWins = 0
           let numberOfLosses = 0
-          let totalPoints = 0
+          let totalPointsFor = 0   // Points scored by the team
+          let totalPointsAgainst = 0 // Points scored against the team
 
           matches.forEach((match) => {
             if (match.player_stats.length > 0) {
               if (match.team_1._id === teamId || match.team_2._id === teamId) {
                 numberOfPlays++
 
-                // Check if the team won or lost
                 const team1Points = match.player_stats
                   .filter((stat) => stat.team_id === match.team_1._id)
                   .reduce((sum, stat) => sum + stat.points, 0)
@@ -46,14 +46,16 @@ const Standings = () => {
                   .reduce((sum, stat) => sum + stat.points, 0)
 
                 if (match.team_1._id === teamId) {
-                  totalPoints += team1Points
+                  totalPointsFor += team1Points
+                  totalPointsAgainst += team2Points
                   if (team1Points > team2Points) {
                     numberOfWins++
                   } else {
                     numberOfLosses++
                   }
                 } else if (match.team_2._id === teamId) {
-                  totalPoints += team2Points
+                  totalPointsFor += team2Points
+                  totalPointsAgainst += team1Points
                   if (team2Points > team1Points) {
                     numberOfWins++
                   } else {
@@ -64,17 +66,29 @@ const Standings = () => {
             }
           })
 
+          // Calculate points difference
+          const pointsDifference = totalPointsFor - totalPointsAgainst
+
           return {
             teamName,
             numberOfPlays,
             numberOfWins,
             numberOfLosses,
-            points:( numberOfWins * 2) + numberOfLosses, // 2 points for a win, 1 point for a loss
+            points: (numberOfWins * 2) + numberOfLosses,
+            totalPointsFor,
+            totalPointsAgainst,
+            pointsDifference
           }
         })
 
-        // Sort teams by points (highest first)
-        const sortedStandings = standings.sort((a, b) => b.points - a.points)
+        // Sort teams: first by points (descending), then by points difference (descending)
+        const sortedStandings = standings.sort((a, b) => {
+          if (b.points !== a.points) {
+            return b.points - a.points
+          }
+          return b.pointsDifference - a.pointsDifference
+        })
+        
         setTeamsData(sortedStandings)
         setLoading(false)
       })
@@ -117,6 +131,9 @@ const Standings = () => {
                       <th className="px-6 py-4 text-sm font-semibold text-orange-400 text-center">Wins</th>
                       <th className="px-6 py-4 text-sm font-semibold text-orange-400 text-center">Losses</th>
                       <th className="px-6 py-4 text-sm font-semibold text-orange-400 text-center">Points</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-orange-400 text-center">FOR</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-orange-400 text-center">AGST</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-orange-400 text-center">PD</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -154,12 +171,27 @@ const Standings = () => {
                         <td className="px-6 py-4 text-center">
                           <span className="font-bold text-lg text-orange-400">{team.points}</span>
                         </td>
+                        <td className="px-6 py-4 text-center font-medium text-green-300">
+                          {team.totalPointsFor}
+                        </td>
+                        <td className="px-6 py-4 text-center font-medium text-red-300">
+                          {team.totalPointsAgainst}
+                        </td>
+                        <td className={`px-6 py-4 text-center font-medium ${
+                          team.pointsDifference > 0 
+                            ? 'text-green-400' 
+                            : team.pointsDifference < 0 
+                              ? 'text-red-400' 
+                              : 'text-gray-400'
+                        }`}>
+                          {team.pointsDifference > 0 ? '+' : ''}{team.pointsDifference}
+                        </td>
                       </tr>
                     ))}
 
                     {teamsData.length === 0 && (
                       <tr>
-                        <td colSpan="6" className="px-6 py-8 text-center text-gray-400">
+                        <td colSpan="9" className="px-6 py-8 text-center text-gray-400">
                           No standings data available for this tournament.
                         </td>
                       </tr>
@@ -172,8 +204,11 @@ const Standings = () => {
 
           {/* Legend */}
           <div className="mt-6 bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-            <h3 className="text-sm font-medium text-gray-300 mb-2">Points System:</h3>
-            <p className="text-xs text-gray-400">Win = 2 points | Loss = 1 points</p>
+            <h3 className="text-sm font-medium text-gray-300 mb-2">Standings Rules:</h3>
+            <p className="text-xs text-gray-400 mb-1">• Win = 2 points | Loss = 1 point</p>
+            <p className="text-xs text-gray-400 mb-1">• FOR = Total points scored by the team</p>
+            <p className="text-xs text-gray-400 mb-1">• AGST = Total points scored against the team</p>
+            <p className="text-xs text-gray-400">• PD (Points Difference) = FOR - AGST</p>
           </div>
         </div>
       </div>
