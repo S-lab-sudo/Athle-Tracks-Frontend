@@ -73,79 +73,90 @@ const Events = () => {
   }, []);
 
   // Fetch matches for the selected tournament
-  useEffect(() => {
-    const fetchMatches = async () => {
-      if (!selectedTournament) return;
+useEffect(() => {
+  const fetchMatches = async () => {
+    if (!selectedTournament) return;
 
-      setIsLoading(true);
+    setIsLoading(true);
 
-      try {
-        const selectedTournamentData = allTournaments.find(
-          (tournament) => tournament._id === selectedTournament
+    try {
+      const selectedTournamentData = allTournaments.find(
+        (tournament) => tournament._id === selectedTournament
+      );
+      setselectedTournamentData(selectedTournamentData);
+
+      if (selectedTournamentData && selectedTournamentData.matches.length > 0) {
+        setMatches(selectedTournamentData.matches);
+
+        const matchPromises = selectedTournamentData.matches.map((matchId) =>
+          apiClient.get(`/match/matches/${matchId}`)
         );
-        setselectedTournamentData(selectedTournamentData)
 
-        if (
-          selectedTournamentData &&
-          selectedTournamentData.matches.length > 0
-        ) {
-          setMatches(selectedTournamentData.matches);
+        const responses = await Promise.all(matchPromises);
+        const matchData = responses.map((res) => res.data);
+        const enrichedMatchData = matchData.map((match) => {
+          let team1Score = 0;
+          let team2Score = 0;
 
-          const matchPromises = selectedTournamentData.matches.map((matchId) =>
-            apiClient.get(`/match/matches/${matchId}`)
-          );
-
-          const responses = await Promise.all(matchPromises);
-          const matchData = responses.map((res) => res.data);
-          const enrichedMatchData = matchData.map((match) => {
-            let team1Score = 0;
-            let team2Score = 0;
-
-            match.player_stats.forEach((playerStat) => {
-              if (playerStat.team_id === match.team_1._id) {
-                team1Score += playerStat.points;
-              } else if (playerStat.team_id === match.team_2._id) {
-                team2Score += playerStat.points;
-              }
-            });
-
-            return {
-              ...match,
-              team1Score,
-              team2Score,
-            };
+          match.player_stats.forEach((playerStat) => {
+            if (playerStat.team_id === match.team_1._id) {
+              team1Score += playerStat.points;
+            } else if (playerStat.team_id === match.team_2._id) {
+              team2Score += playerStat.points;
+            }
           });
 
-          const grouped = enrichedMatchData.reduce((acc, match) => {
-            const matchDate = dayjs(match.date).format("DD MMM YYYY");
-            if (!acc[matchDate]) {
-              acc[matchDate] = [];
-            }
-            acc[matchDate].push(match);
-            return acc;
-          }, {});
+          return {
+            ...match,
+            team1Score,
+            team2Score,
+          };
+        });
 
-          const sortedGrouped = Object.keys(grouped)
-            .sort((a, b) => new Date(a) - new Date(b))
-            .reduce((acc, key) => {
-              acc[key] = grouped[key];
-              return acc;
-            }, {});
+        const grouped = enrichedMatchData.reduce((acc, match) => {
+          const matchDate = dayjs(match.date).format("DD MMM YYYY");
+          if (!acc[matchDate]) {
+            acc[matchDate] = [];
+          }
+          acc[matchDate].push(match);
+          return acc;
+        }, {});
 
-          setGroupedMatches(sortedGrouped);
-        } else {
-          setMatches([]);
-          setGroupedMatches({});
-        }
-      } catch (error) {
-        console.error("Error fetching match data:", error);
-      } finally {
-        setIsLoading(false);
+        const sortedDates = Object.keys(grouped).sort(
+          (a, b) => new Date(a) - new Date(b)
+        );
+
+        const sortedGrouped = sortedDates.reduce((acc, key) => {
+          acc[key] = grouped[key];
+          return acc;
+        }, {});
+
+        setGroupedMatches(sortedGrouped);
+
+        // Set the latest date as selected
+        const latestDate = sortedDates[sortedDates.length - 1];
+        setSelectedDate(latestDate);
+
+        // Update visible range to show the latest dates
+        const totalDates = sortedDates.length;
+        const endIndex = totalDates;
+        const startIndex = Math.max(0, endIndex - 3);
+        setVisibleRange([startIndex, endIndex]);
+      } else {
+        setMatches([]);
+        setGroupedMatches({});
       }
-    };
+    } catch (error) {
+      console.error("Error fetching match data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchMatches();
-  }, [selectedTournament]);
+  fetchMatches();
+}, [selectedTournament]);
+
+
   useEffect(() => {
     if (!isLoading) {
       window.scrollTo(0, 0);
@@ -184,19 +195,39 @@ const Events = () => {
     setSelectedDate(date);
   };
 
-  const handleLeftClick = () => {
-    setVisibleRange(([start, end]) => [
-      Math.max(0, start - 1),
-      Math.max(3, end - 1),
-    ]);
-  };
+const handleLeftClick = () => {
+  const totalDates = Object.keys(groupedMatches).length;
+  let moveBy = 1;
 
-  const handleRightClick = () => {
-    setVisibleRange(([start, end]) => [
-      Math.min(Object.keys(groupedMatches).length - 3, start + 1),
-      Math.min(Object.keys(groupedMatches).length, end + 1),
-    ]);
-  };
+  // Determine how many steps to move
+  if (totalDates >= 6) {
+    moveBy = 3;
+  } else if (totalDates === 5) {
+    moveBy = 2;
+  }
+
+  setVisibleRange(([start, end]) => [
+    Math.max(0, start - moveBy),
+    Math.max(3, end - moveBy),
+  ]);
+};
+const handleRightClick = () => {
+  const totalDates = Object.keys(groupedMatches).length;
+  let moveBy = 1;
+
+  // Determine how many steps to move
+  if (totalDates >= 6) {
+    moveBy = 3;
+  } else if (totalDates === 5) {
+    moveBy = 2;
+  }
+
+  setVisibleRange(([start, end]) => [
+    Math.min(Object.keys(groupedMatches).length - 3, start + moveBy),
+    Math.min(Object.keys(groupedMatches).length, end + moveBy),
+  ]);
+};
+
 
   const visibleDates = Object.keys(groupedMatches).slice(
     visibleRange[0],
